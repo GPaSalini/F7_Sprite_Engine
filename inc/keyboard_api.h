@@ -18,11 +18,11 @@ typedef struct _Keys_Pressed
 	uint8_t keys[6];	//Botones presionados
 } Keys_Pressed;
 
-Keys_Pressed output;
-
 //Funciones Privadas: Prototipos
+void USBH_HID_GetKeyCode(HID_KEYBD_Info_TypeDef *info);
 void getKeyboardInput(USBH_HandleTypeDef *phost);
 uint8_t Keyboard_checkASCII(char code);
 uint8_t Keyboard_checkKEY(char code);
+uint8_t Keyboard_getASCII(void);
 
 #endif /* INC_KEYBOARD_API_H_ */

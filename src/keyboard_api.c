@@ -7,8 +7,9 @@
 
 #include "keyboard_api.h"
 
-//Variables
+//Variables Globales
 uint8_t host_state;
+Keys_Pressed output;
 
 //Constantes del teclado
 static  const  int8_t  HID_KEYBRD_Key[] = {
@@ -78,11 +79,9 @@ static  const  uint8_t  HID_KEYBRD_Codes[] = {
   58,   44,   60,  127,   64,   57,   62,  128        /* 0xE0 - 0xE7 */
 };
 
-//Obtiene las teclas presionadas
+//Guarda las teclas presionadas
 void USBH_HID_GetKeyCode(HID_KEYBD_Info_TypeDef *info)
-	{
- 	uint8_t i = 0;
-
+{
  	if((info->lshift) || (info->rshift))
 		for (uint8_t i=0;i<6;i++)
 		{
@@ -115,27 +114,35 @@ void getKeyboardInput(USBH_HandleTypeDef *phost)
 	}
 }
 
-//Revisa si se presiona la tecla indicada
+//Revisa si se presiona la tecla con el codigo ASCII indicado
 uint8_t Keyboard_checkASCII(char code)
 {
-	uint8_t ret = FALSE;
-
 	if(host_state == HOST_USER_CLASS_ACTIVE)
 		for (uint8_t i=0;i<6;i++)
 			if (output.ascii[i]==code)
-				ret = TRUE;
+				return TRUE;
 
-	return ret;
+	return FALSE;
 }
 
+//Revisa si se presiona la tecla indicada
 uint8_t Keyboard_checkKEY(char code)
 {
-	uint8_t ret = FALSE;
-
 	if(host_state == HOST_USER_CLASS_ACTIVE)
 		for (uint8_t i=0;i<6;i++)
 			if (output.keys[i]==code)
-				ret = TRUE;
+				return TRUE;
 
-	return ret;
+	return FALSE;
+}
+
+//Retorna el primer ASCII presionado del teclado
+uint8_t Keyboard_getASCII(void)
+{
+	if(host_state == HOST_USER_CLASS_ACTIVE)
+		for (uint8_t i=0;i<6;i++)
+			if (output.ascii[i]!=0)
+				return output.ascii[i];
+
+	return 0;
 }
